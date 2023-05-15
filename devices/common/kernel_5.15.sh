@@ -2,7 +2,7 @@
 
 rm -rf target/linux package/kernel package/boot package/firmware/linux-firmware include/{kernel-*,netfilter.mk}
 latest="$(curl -sfL https://github.com/openwrt/openwrt/commits/master/include | grep -o 'href=".*>kernel: bump 5.15' | head -1 | cut -d / -f 5 | cut -d '"' -f 1)"
-latest=""
+#latest=""
 mkdir new; cp -rf .git new/.git
 cd new
 [ "$latest" ] && (git reset --hard $latest  && git checkout HEAD^) || git reset --hard origin/master
@@ -28,6 +28,8 @@ rm -rf target/linux/generic/backport-5.15/{802-v6.1-nvmem*,803-v5.19-nvmem*,733-
 curl -sfL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/generic/pending-5.15/613-netfilter_optional_tcp_window_check.patch -o target/linux/generic/pending-5.15/613-netfilter_optional_tcp_window_check.patch
 
 sed -i "s/tty\(0\|1\)::askfirst/tty\1::respawn/g" target/linux/*/base-files/etc/inittab
+
+sed -i "s/CONFIG_WERROR=y/CONFIG_WERROR=n/" target/linux/generic/config-5.15
 
 echo "
 CONFIG_TESTING_KERNEL=y
